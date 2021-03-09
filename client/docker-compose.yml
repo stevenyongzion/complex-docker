@@ -1,0 +1,93 @@
+version: '3'
+services: 
+  web:
+    build:
+      # context is to specify where the codes to be pulled from, which is the files in current directory
+      # if the react src codes are in a subfolder named reactsrc then put context: reactsrc
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes: 
+      - /usr/src/app/node_modules
+      - .:/usr/src/app/
+  # a 2nd service is created so that we can run test and detects changes
+  tests:
+    build:
+      # context is to specify where the codes to be pulled from, which is the files in current directory
+      # if the react src codes are in a subfolder named reactsrc then put context: reactsrc
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes: 
+      - /usr/src/app/node_modules
+      - .:/usr/src/app/
+    command: ["npm", "run", "test"]
+# Sample output when setting up 2 services and when update the test file, test result automatically shows
+# However, no interaction.
+# Sending build context to Docker daemon  1.042MB
+
+# Step 1/6 : FROM node:14
+#  ---> 7bef16bb2cf1
+# Step 2/6 : WORKDIR /usr/src/app
+#  ---> Using cache
+#  ---> 22e6ac1ebd61
+# Step 3/6 : COPY package*.json ./
+#  ---> Using cache
+#  ---> a6a51796b65b
+# Step 4/6 : RUN npm install
+#  ---> Using cache
+#  ---> ad47d82e16ef
+# Step 5/6 : COPY ./ ./
+#  ---> Using cache
+#  ---> 6cea8a5a21e4
+# Step 6/6 : CMD [ "npm", "start" ]
+#  ---> Using cache
+#  ---> a0fd80ab2ff7
+# Successfully built a0fd80ab2ff7
+# Successfully tagged frontend_tests:latest
+# Recreating frontend_web_1 ... done
+# Creating frontend_tests_1 ... done
+# Attaching to frontend_web_1, frontend_tests_1
+# web_1    | 
+# web_1    | > frontend@0.1.0 start /usr/src/app
+# web_1    | > react-scripts start
+# web_1    | 
+# tests_1  | 
+# tests_1  | > frontend@0.1.0 test /usr/src/app
+# tests_1  | > react-scripts test
+# tests_1  | 
+# web_1    | ℹ ｢wds｣: Project is running at http://172.19.0.2/
+# web_1    | ℹ ｢wds｣: webpack output is served from 
+# web_1    | ℹ ｢wds｣: Content not from webpack is served from /usr/src/app/public
+# web_1    | ℹ ｢wds｣: 404s will fallback to /
+# web_1    | Starting the development server...
+# web_1    | 
+# tests_1  | PASS src/App.test.js
+# tests_1  |   ✓ renders learn react link (35 ms)
+# tests_1  |   ✓ renders learn react link (5 ms)
+# tests_1  | 
+# tests_1  | Test Suites: 1 passed, 1 total
+# tests_1  | Tests:       2 passed, 2 total
+# tests_1  | Snapshots:   0 total
+# tests_1  | Time:        1.851 s
+# tests_1  | Ran all test suites related to changed files.
+# tests_1  | 
+# web_1    | Compiled successfully!
+# web_1    | 
+# web_1    | You can now view frontend in the browser.
+# web_1    | 
+# web_1    |   Local:            http://localhost:3000
+# web_1    |   On Your Network:  http://172.19.0.2:3000
+# web_1    | 
+# web_1    | Note that the development build is not optimized.
+# web_1    | To create a production build, use npm run build.
+# web_1    | 
+# tests_1  | PASS src/App.test.js
+# tests_1  |   ✓ renders learn react link (36 ms)
+# tests_1  | 
+# tests_1  | Test Suites: 1 passed, 1 total
+# tests_1  | Tests:       1 passed, 1 total
+# tests_1  | Snapshots:   0 total
+# tests_1  | Time:        1.885 s, estimated 2 s
+# tests_1  | Ran all test suites related to changed files.
+# tests_1  |     

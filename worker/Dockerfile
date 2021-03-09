@@ -1,0 +1,22 @@
+# https://docs.docker.com/engine/install/ubuntu/
+# sudo service docker start
+# Start from a Node.js 14 (LTS) image 
+FROM node:14 
+
+# Specify the directory inside the image in which all commands will run 
+WORKDIR /app 
+
+# Copy package files and install dependencies 
+COPY package*.json ./ 
+RUN npm install 
+
+# Copy all of the app files into the image 
+# Note that for development environment, and mapped with volumes
+# the below is not really needed
+COPY ./ ./ 
+
+# The default command to run when starting the container 
+CMD [ "npm", "run", "start" ]
+
+# docker build -t simple-node .
+# docker run --rm -p 3000:3000 simple-node
