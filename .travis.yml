@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t stevenyong/react-test -f ./client/Dockerfile.dev ./client
+  # if you have multiple test to run then you can build them here as well, then 
+  # run the test in the scripts
+
+script:
+  # if script fails, then it will hv exit code <> 0 
+  - docker run stevenyong/react-test npm run test a -- --coverage --watchAll=false
+
+after_success:
+  # refer https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html for pushing to AWS ECR
+  - docker build -t stevenyong/complex-client ./client
+  - docker build -t stevenyong/complex-nginx ./nginx
+  - docker build -t stevenyong/complex-server ./server
+  - docker build -t stevenyong/complex-worker ./worker
+  # login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take thos images and push them to docker hub
+  - docker push stevenyong/complex-client
+  - docker push stevenyong/complex-nginx
+  - docker push stevenyong/complex-server
+  - docker push stevenyong/complex-worker
